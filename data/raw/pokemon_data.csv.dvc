@@ -1,0 +1,5 @@
+outs:
+- md5: 86170e4b9530023a767004ecb26b86c0
+  size: 8365
+  hash: md5
+  path: pokemon_data.csv
