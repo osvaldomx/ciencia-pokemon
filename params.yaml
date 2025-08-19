@@ -1,0 +1,12 @@
+# params.yaml
+data:
+  raw_path: data/raw/pokemon_data.csv
+
+model:
+  name: KNeighborsClassifier
+  params:
+    n_neighbors: 5
+
+training:
+  test_size: 0.2
+  random_state: 42

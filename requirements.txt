@@ -5,3 +5,6 @@ Pillow
 numpy
 tqdm
 dvc
+scikit-learn
+mlflow
+PyYAML
