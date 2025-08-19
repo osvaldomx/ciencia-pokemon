@@ -1,0 +1,5 @@
+outs:
+- md5: edde926903f1c44224c4430c9e720f2e
+  size: 681
+  hash: md5
+  path: mlb.joblib

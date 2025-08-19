@@ -12,7 +12,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
 # --- Configuración del Experimento con MLflow ---
-mlflow.set_tracking_uri("http://localhost:5000")
+mlflow.set_tracking_uri("http://127.0.0.1:5000")
 mlflow.set_experiment("Pokemon Type Prediction")
 
 def train_model():
@@ -27,7 +27,7 @@ def train_model():
     data_url = dvc.api.get_url(
         path=params['data']['raw_path'],
         repo='.', # Repositorio local
-        rev='' # Rama o commit
+        rev='main' # Rama o commit
     )
 
     # Cargar los datos
@@ -79,6 +79,8 @@ def train_model():
 
         print(f"Accuracy: {accuracy:.4f}")
         print(f"F1 Score (micro): {f1:.4f}")
+        print(f"Precision (micro): {precision:.4f}")
+        print(f"Reecall (micro): {recall:.4f}")
 
         # Registrar parámetros y métricas en MLflow
         mlflow.log_params(model_params)
