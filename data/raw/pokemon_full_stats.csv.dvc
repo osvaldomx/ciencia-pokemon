@@ -1,0 +1,5 @@
+outs:
+- md5: b1a86da0e64a5be507958952bcd8b9c8
+  size: 113636
+  hash: md5
+  path: pokemon_full_stats.csv
