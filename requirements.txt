@@ -8,3 +8,6 @@ dvc
 scikit-learn
 mlflow
 PyYAML
+fastapi
+uvicorn[standard]
+python-multipart

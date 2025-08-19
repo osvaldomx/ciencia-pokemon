@@ -35,7 +35,7 @@ def train_model():
 
     # --- Preprocesamiento de Datos ---
     # Rellenar valores nulos en 'type2'
-    df['type2'].fillna('None', inplace=True)
+    df['type2'] = df['type2'].fillna('None')
 
     # Crear las etiquetas (y) combinando los tipos en una lista
     y_raw = df[['type1', 'type2']].values.tolist()
@@ -97,7 +97,11 @@ def train_model():
         mlflow.log_artifact(binarizer_path)
 
         # Registrar el modelo en MLflow
-        mlflow.sklearn.log_model(model, "pokemon_classifier")
+        mlflow.sklearn.log_model(
+            sk_model=model, 
+            name="pokemon_classifier",
+            input_example=X_train.head(5)
+        )
 
         print("Modelo, binarizador y métricas guardadas en MLflow.")
 
