@@ -1,15 +1,10 @@
 # src/api/main.py
 import os
+import joblib
+import mlflow
+import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel
-import pandas as pd
-import mlflow
-import joblib
-
-default_mlflow_uri = "http://127.0.0.1:5000"
-
-mlflow_tracking_uri = os.getenv("MLFLOW_TRACKING_URI", default_mlflow_uri)
-mlflow.set_tracking_uri(mlflow_tracking_uri)
 
 # --- Configuración de la App ---
 app = FastAPI(
@@ -18,20 +13,42 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# --- Carga de Modelos y Artefactos ---
-# Reemplaza con el Run ID de tu mejor experimento en MLflow
-RUN_ID = "f59ab49f691d427ea860087faaf7b041" 
+# --- Variables Globales para los Modelos ---
+# Inicializamos los modelos como None. Se cargarán durante el evento 'startup'.
+model = None
+mlb = None
 
-# Cargar el modelo de clasificación desde MLflow
-logged_model_uri = f"runs:/{RUN_ID}/pokemon_classifier"
-model = mlflow.pyfunc.load_model(logged_model_uri)
+# --- Eventos del Ciclo de Vida de la Aplicación ---
+@app.on_event("startup")
+def load_models():
+    """
+    Esta función se ejecuta una sola vez cuando la aplicación FastAPI se inicia.
+    Carga los modelos desde MLflow y los asigna a las variables globales.
+    """
+    global model, mlb
+    
+    print("Cargando modelos desde MLflow...")
 
-# Cargar el binarizador de etiquetas desde los artefactos de MLflow
-client = mlflow.tracking.MlflowClient()
-local_path = client.download_artifacts(run_id=RUN_ID, path="mlb.joblib")
-mlb = joblib.load(local_path)
+    # Usamos la variable de entorno para la URI de MLflow, con un default para local
+    default_mlflow_uri = "http://127.0.0.1:5001"
+    mlflow_tracking_uri = os.getenv("MLFLOW_TRACKING_URI", default_mlflow_uri)
+    mlflow.set_tracking_uri(mlflow_tracking_uri)
 
-# --- Definición de Modelos de Datos (Pydantic) ---
+    # El RUN_ID también puede venir de una variable de entorno para mayor flexibilidad
+    run_id = os.getenv("MLFLOW_RUN_ID", "f59ab49f691d427ea860087faaf7b041") 
+    
+    # Cargar el modelo de clasificación
+    logged_model_uri = f"runs:/{run_id}/pokemon_classifier"
+    model = mlflow.pyfunc.load_model(logged_model_uri)
+    
+    # Cargar el binarizador
+    client = mlflow.tracking.MlflowClient()
+    local_path = client.download_artifacts(run_id=run_id, path="mlb.joblib")
+    mlb = joblib.load(local_path)
+    
+    print("Modelos cargados exitosamente.")
+
+# --- Modelos de Datos (Pydantic) ---
 class PokemonColor(BaseModel):
     dominant_r: int
     dominant_g: int
@@ -40,8 +57,7 @@ class PokemonColor(BaseModel):
 class PredictionOut(BaseModel):
     predicted_types: list[str]
 
-
-# --- Endpoints de la API ---
+# --- Endpoints ---
 @app.get("/")
 def read_root():
     return {"message": "Bienvenido a la API de predicción de tipos de Pokémon"}
@@ -51,17 +67,10 @@ def predict_type(pokemon_color: PokemonColor):
     """
     Predice los tipos de un Pokémon a partir de su color dominante RGB.
     """
-    # Crear un DataFrame a partir de los datos de entrada
+    # El endpoint ahora usa los modelos cargados en las variables globales.
     input_df = pd.DataFrame([pokemon_color.dict()])
-
-    # Realizar la predicción
     prediction_bin = model.predict(input_df)
-
-    # Invertir la transformación para obtener los nombres de los tipos
     predicted_types = mlb.inverse_transform(prediction_bin)
-
-    # Formatear la salida
-    # inverse_transform devuelve una tupla de listas, la aplanamos
     flat_types = [t for types_tuple in predicted_types for t in types_tuple if t != 'None']
-
+    
     return PredictionOut(predicted_types=flat_types)
