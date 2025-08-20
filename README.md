@@ -33,8 +33,22 @@ Este proyecto demuestra un ciclo de vida completo de MLOps, desde la recolecció
 
 El enfoque principal no es la precisión del modelo, sino la implementación de una arquitectura robusta, reproducible y automatizada utilizando herramientas estándar de la industria.
 
+## 🔬 Análisis Exploratorio de Datos (EDA)
+Antes de construir cualquier modelo, se realizó un análisis exhaustivo para desentrañar los secretos del universo Pokémon. Este EDA cuenta la historia de los datos, desde estadísticas básicas hasta el descubrimiento de arquetipos de combate mediante Machine Learning.
 
-## Arquitectura MLOps
+**Principales Descubrimientos:**
+
+* **Power Creep:** Se identificó una clara tendencia al alza en las estadísticas totales de los Pokémon en generaciones más recientes.
+
+* **Arquetipos de Combate:** Usando clustering K-Means y PCA, se descubrieron 5 arquetipos de combate naturales, revelando los roles estratégicos ocultos en los datos.
+
+* **Estatus Legendario:** Se cuantificó la brecha de poder, demostrando que los Pokémon Legendarios y Míticos operan en un nivel estadístico completamente distinto.
+
+* **Relaciones de Tipos:** Mediante un Diagrama de Cuerdas, se visualizaron las combinaciones de tipos duales más comunes, como `Normal/Volador` y `Planta/Veneno`.
+
+Para un desglose completo, el código y todas las visualizaciones, consulta el notebook detallado: `notebooks/pokemon_full_eda.ipynb`.
+
+## 🏛️ Arquitectura MLOps
 
 El proyecto sigue un flujo de trabajo estructurado que asegura la reproducibilidad y la calidad en cada etapa:
 
@@ -48,7 +62,7 @@ El proyecto sigue un flujo de trabajo estructurado que asegura la reproducibilid
 
 * 🤖 **Integración Continua (CI)**: Se configura un pipeline con GitHub Actions que ejecuta automáticamente las pruebas unitarias (`pytest`) en cada `push`, asegurando la integridad del código.
 
-## Stack Tecnológico
+## 💻 Stack Tecnológico
 
 * **Lenguaje**: Python 3.11
 * **Framework de API**: FastAPI
@@ -57,7 +71,7 @@ El proyecto sigue un flujo de trabajo estructurado que asegura la reproducibilid
 * **Librerías de ML**: Scikit-learn, Pandas, NumPy
 * **Pruebas**: Pytest, Unittest.mock
 
-## Cómo Ejecutar el Proyecto 🚀
+## 🚀 Cómo Ejecutar el Proyecto
 
 Sigue estos pasos para poner en marcha el proyecto en tu máquina local.
 
@@ -144,7 +158,7 @@ docker run -p 8000:8000 \
 
 5. **Probar:** Abre tu navegador y ve a `http://127.0.0.1:8000/docs`.
 
-## Pruebas Automatizadas 🧪
+## 🧪 Pruebas Automatizadas
 
 El proyecto incluye un conjunto de pruebas unitarias para validar la funcionalidad de la API sin depender de servicios externos.
 
@@ -156,5 +170,5 @@ python -m pytest
 
 Las pruebas utilizan `unittest.mock` para simular las llamadas al servidor MLflow, lo que las hace rápidas, confiables e ideales para ejecutarse en un entorno de CI.
 
-## Licencia
+## 📜 Licencia
 Este proyecto está bajo la Licencia GPL-3.0. Ver el archivo LICENSE para más detalles.
